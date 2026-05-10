@@ -1,0 +1,44 @@
+# Build
+build/
+out/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+*.make
+compile_commands.json
+
+# Binaries
+*.o
+*.a
+*.so
+*.dylib
+*.dll
+*.exe
+
+# IDE
+.vs/
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# vcpkg
+vcpkg_installed/
+
+# Conan
+.conan/
+conanbuildinfo.*
+conaninfo.txt
+graph_info.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets / env
+*.env
+*.pem
+*.key
+secrets.*

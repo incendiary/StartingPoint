@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    name: Validate templates
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check shell script syntax
+        run: bash -n new-project.sh
+
+      - name: Validate YAML files
+        run: |
+          pip install --quiet yamllint
+          yamllint -d relaxed \
+            python-template/.pre-commit-config.yaml \
+            python-template/.github/workflows/ci.yml \
+            csharp-template/.pre-commit-config.yaml \
+            csharp-template/.github/workflows/ci.yml \
+            cpp-template/.pre-commit-config.yaml \
+            cpp-template/.github/workflows/ci.yml
+
+  secret-scan:
+    name: Secret Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Pattern matching — fast local-style gate in CI
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Verified credential detection — confirms live secrets via provider APIs
+      - name: TruffleHog OSS
+        uses: trufflesecurity/trufflehog@v3.95.2
+        with:
+          extra_args: --results=verified,unknown
